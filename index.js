@@ -19,7 +19,7 @@ import {
    Text
 } from 'react-native';
  
-import ReactNativeBlobUtil from 'react-native-blob-util'
+import ReactNativeBlobUtil from 'rn-fetch-blob-v1'
  
 const SHA1 = require('crypto-js/sha1');
 import PdfView from './PdfView';
