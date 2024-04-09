@@ -1,13 +1,13 @@
 {
-    "name": "react-native-pdf-advance",
-    "version": "1.0.2",
+    "name": "react-native-pdf",
+    "version": "6.7.4",
     "summary": "A react native PDF view component",
     "description": "A react native PDF view component, support ios and android platform",
     "main": "index.js",
     "typings": "./index.d.ts",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Edfora/react-native-pdf-advance"
+        "url": "git+https://github.com/wonday/react-native-pdf.git"
     },
     "keywords": [
         "react-component",
@@ -19,19 +19,27 @@
         "viewer"
     ],
     "author": {
-        "name": "Edfora",
-        "url": "https://github.com/Edfora"
+        "name": "Wonday",
+        "url": "https://github.com/wonday"
     },
     "license": "MIT",
-    "homepage": "https://github.com/Edfora/react-native-pdf-advance",
+    "homepage": "https://github.com/wonday/react-native-pdf",
     "bugs": {
-        "url": "https://github.com/Edfora/react-native-pdf-advance/issues"
+        "url": "https://github.com/wonday/react-native-pdf/issues"
     },
     "dependencies": {
-        "crypto-js": "^3.2.0"
+        "crypto-js": "4.2.0",
+        "deprecated-react-native-prop-types": "^2.3.0"
     },
     "devDependencies": {
+        "@babel/core": "^7.20.2",
+        "@babel/runtime": "^7.20.1",
         "prop-types": "^15.7.2"
+    },
+    "peerDependencies": {
+        "react": "*",
+        "react-native": "*",
+        "react-native-blob-util": ">=0.13.7"
     },
     "files": [
         "android/",
@@ -46,6 +54,15 @@
         "PdfView.js",
         "PdfViewFlatList.js",
         "PinchZoomView.js",
-        "react-native-pdf.podspec"
-    ]
+        "react-native-pdf.podspec",
+        "fabric/"
+    ],
+    "codegenConfig": {
+        "name": "rnpdf",
+        "type": "components",
+        "jsSrcsDir": "./fabric",
+        "android": {
+          "javaPackageName": "org.wonday.pdf"
+        }
+      }
 }
