@@ -8,15 +8,15 @@
 
 'use strict';
 import React, {Component} from 'react';
-import {ScrollView, FlatList, View, StyleSheet, ViewPropTypes} from 'react-native';
-
+import {ScrollView, View, StyleSheet} from 'react-native';
+import {ViewPropTypes} from 'deprecated-react-native-prop-types';
 import PropTypes from 'prop-types';
 
-import PdfManager from './PdfManager';
-import PdfPageView from './PdfPageView';
-import DoubleTapView from './DoubleTapView';
-import PinchZoomView from './PinchZoomView';
-import PdfViewFlatList from './PdfViewFlatList';
+import PdfManager from 'react-native-pdf-advance/PdfManager';
+import PdfPageView from 'react-native-pdf-advance/PdfPageView';
+import DoubleTapView from 'react-native-pdf-advance/DoubleTapView';
+import PinchZoomView from 'react-native-pdf-advance/PinchZoomView';
+import PdfViewFlatList from 'react-native-pdf-advance/PdfViewFlatList';
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
