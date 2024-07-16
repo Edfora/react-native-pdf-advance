@@ -146,7 +146,7 @@ export default class Pdf extends Component {
     componentWillUnmount() {
         this._mounted = false;
         if (this.lastRNBFTask) {
-            this.lastRNBFTask.cancel(err => {
+            this.lastRNBFTask?.cancel?.(err => {
             });
             this.lastRNBFTask = null;
         }
