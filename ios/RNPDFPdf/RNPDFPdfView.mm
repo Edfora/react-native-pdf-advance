@@ -86,6 +86,12 @@ using namespace facebook::react;
   return concreteComponentDescriptorProvider<RNPDFPdfViewComponentDescriptor>();
 }
 
+// Needed because of this: https://github.com/facebook/react-native/pull/37274
++ (void)load
+{
+  [super load];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
@@ -159,6 +165,11 @@ using namespace facebook::react;
     if (_showsVerticalScrollIndicator != newProps.showsVerticalScrollIndicator) {
         _showsVerticalScrollIndicator = newProps.showsVerticalScrollIndicator;
         [updatedPropNames addObject:@"showsVerticalScrollIndicator"];
+    }
+
+    if (_scrollEnabled != newProps.scrollEnabled) {
+        _scrollEnabled = newProps.scrollEnabled;
+        [updatedPropNames addObject:@"scrollEnabled"];
     }
 
     [super updateProps:props oldProps:oldProps];
@@ -247,6 +258,7 @@ using namespace facebook::react;
     _singlePage = NO;
     _showsHorizontalScrollIndicator = YES;
     _showsVerticalScrollIndicator = YES;
+    _scrollEnabled = YES;
 
     // init and config PDFView
     _pdfView = [[PDFView alloc] initWithFrame:CGRectMake(0, 0, 500, 500)];
@@ -456,37 +468,23 @@ using namespace facebook::react;
             }
         }
 
-        if (_pdfDocument && ([changedProps containsObject:@"path"] || [changedProps containsObject:@"showsHorizontalScrollIndicator"])) {
-            if (_showsHorizontalScrollIndicator) {
-                for (UIView *subview in _pdfView.subviews) {
-                    if ([subview isKindOfClass:[UIScrollView class]]) {
-                        UIScrollView *scrollView = (UIScrollView *)subview;
-                        scrollView.showsHorizontalScrollIndicator = YES;
-                    }
-                }
-            } else {
-                for (UIView *subview in _pdfView.subviews) {
-                    if ([subview isKindOfClass:[UIScrollView class]]) {
-                        UIScrollView *scrollView = (UIScrollView *)subview;
-                        scrollView.showsHorizontalScrollIndicator = NO;
-                    }
-                }
-            }
+        if (_pdfDocument && ([changedProps containsObject:@"path"] || [changedProps containsObject:@"showsHorizontalScrollIndicator"] || [changedProps containsObject:@"showsVerticalScrollIndicator"])) {
+            [self setScrollIndicators:self horizontal:_showsHorizontalScrollIndicator vertical:_showsVerticalScrollIndicator depth:0];
         }
 
-        if (_pdfDocument && ([changedProps containsObject:@"path"] || [changedProps containsObject:@"showsVerticalScrollIndicator"])) {
-            if (_showsVerticalScrollIndicator) {
+        if (_pdfDocument && ([changedProps containsObject:@"path"] || [changedProps containsObject:@"scrollEnabled"])) {
+            if (_scrollEnabled) {
                 for (UIView *subview in _pdfView.subviews) {
                     if ([subview isKindOfClass:[UIScrollView class]]) {
                         UIScrollView *scrollView = (UIScrollView *)subview;
-                        scrollView.showsVerticalScrollIndicator = YES;
+                        scrollView.scrollEnabled = YES;
                     }
                 }
             } else {
                 for (UIView *subview in _pdfView.subviews) {
                     if ([subview isKindOfClass:[UIScrollView class]]) {
                         UIScrollView *scrollView = (UIScrollView *)subview;
-                        scrollView.showsVerticalScrollIndicator = NO;
+                        scrollView.scrollEnabled = NO;
                     }
                 }
             }
@@ -705,6 +703,19 @@ using namespace facebook::react;
  */
 - (void)handleDoubleTap:(UITapGestureRecognizer *)recognizer
 {
+
+    // Prevent double tap from selecting text.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_pdfView clearSelection];
+    });
+
+    // Event appears to be consumed; broadcast for JS.
+    // _onChange(@{ @"message": @"pageDoubleTap" });
+
+    if (!_enableDoubleTapZoom) {
+        return;
+    }
+
     // Cycle through min/mid/max scale factors to be consistent with Android
     float min = self->_pdfView.minScaleFactor/self->_fixScaleFactor;
     float max = self->_pdfView.maxScaleFactor/self->_fixScaleFactor;
@@ -863,6 +874,23 @@ using namespace facebook::react;
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     return !_singlePage;
+}
+
+- (void)setScrollIndicators:(UIView *)view horizontal:(BOOL)horizontal vertical:(BOOL)vertical depth:(int)depth {
+    // max depth, prevent infinite loop
+    if (depth > 10) {
+        return;
+    }
+    
+    if ([view isKindOfClass:[UIScrollView class]]) {
+        UIScrollView *scrollView = (UIScrollView *)view;
+        scrollView.showsHorizontalScrollIndicator = horizontal;
+        scrollView.showsVerticalScrollIndicator = vertical;
+    }
+    
+    for (UIView *subview in view.subviews) {
+        [self setScrollIndicators:subview horizontal:horizontal vertical:vertical depth:depth + 1];
+    }
 }
 
 @end

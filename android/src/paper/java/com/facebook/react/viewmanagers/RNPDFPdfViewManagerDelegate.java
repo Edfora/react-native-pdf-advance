@@ -13,13 +13,14 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.uimanager.BaseViewManagerDelegate;
-import com.facebook.react.uimanager.BaseViewManagerInterface;
+import com.facebook.react.uimanager.BaseViewManager;
+import com.facebook.react.uimanager.LayoutShadowNode;
 
-public class RNPDFPdfViewManagerDelegate<T extends View, U extends BaseViewManagerInterface<T> & RNPDFPdfViewManagerInterface<T>> extends BaseViewManagerDelegate<T, U> {
+public class RNPDFPdfViewManagerDelegate<T extends View, U extends BaseViewManager<T, ? extends LayoutShadowNode> & RNPDFPdfViewManagerInterface<T>> extends BaseViewManagerDelegate<T, U> {
   public RNPDFPdfViewManagerDelegate(U viewManager) {
     super(viewManager);
   }
-  @Override
+
   public void setProperty(T view, String propName, @Nullable Object value) {
     switch (propName) {
       case "path":
@@ -45,6 +46,9 @@ public class RNPDFPdfViewManagerDelegate<T extends View, U extends BaseViewManag
         break;
       case "showsVerticalScrollIndicator":
         mViewManager.setShowsVerticalScrollIndicator(view, value == null ? false : (boolean) value);
+        break;
+      case "scrollEnabled":
+        mViewManager.setScrollEnabled(view, value == null ? false : (boolean) value);
         break;
       case "enablePaging":
         mViewManager.setEnablePaging(view, value == null ? false : (boolean) value);
@@ -75,7 +79,6 @@ public class RNPDFPdfViewManagerDelegate<T extends View, U extends BaseViewManag
     }
   }
 
-  @Override
   public void receiveCommand(T view, String commandName, ReadableArray args) {
     switch (commandName) {
       case "setNativePage":

@@ -122,7 +122,9 @@ dependencies {
         implementation 'com.facebook.react:react-native:+'
     }
     // NOTE: The original repo at com.github.barteksc is abandoned by the maintainer; there will be no more updates coming from that repo.
-    //       It was taken over by com.github.TalbotGooday; from now on please use this repo until (if ever) the Barteksc repo is resumed.
-    implementation 'com.github.TalbotGooday:AndroidPdfViewer:3.1.0-beta.3'
+    // The repo from zacharee is based on PdfiumAndroidKt, a much newer fork of PdfiumAndroid, with better maintenance and updated native libraries.
+    implementation 'com.github.zacharee:AndroidPdfViewer:4.0.1'
+    // Depend on PdfiumAndroidKt directly so this can be updated independently of AndroidPdfViewer as updates are provided.
+    implementation 'io.legere:pdfiumandroid:1.0.24'
     implementation 'com.google.code.gson:gson:2.8.5'
 }

@@ -37,6 +37,7 @@ export interface PdfProps {
     horizontal?: boolean,
     showsHorizontalScrollIndicator?: boolean,
     showsVerticalScrollIndicator?: boolean,
+    scrollEnabled?: boolean,
     spacing?: number,
     password?: string,
     renderActivityIndicator?: (progress: number) => React.ReactElement,
@@ -44,7 +45,14 @@ export interface PdfProps {
     enablePaging?: boolean,
     enableRTL?: boolean,
     enableAnnotationRendering?: boolean,
-    fitPolicy?: number,
+    enableDoubleTapZoom?: boolean;
+    /**
+     * Fit policy.  This will adjust the initial zoom of the PDF based on the initial size of the view and the scale factor.
+     * 0 = fit width
+     * 1 = fit height
+     * 2 = fit both
+     */
+    fitPolicy?: 0 | 1 | 2,
     trustAllCerts?: boolean,
     singlePage?: boolean,
     onLoadProgress?: (percent: number,) => void,
