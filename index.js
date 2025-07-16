@@ -253,7 +253,7 @@ export default class Pdf extends Component {
     _downloadFile = async (source, cacheFile) => {
 
         if (this.lastRNBFTask) {
-            this.lastRNBFTask.cancel(err => {
+            this.lastRNBFTask?.cancel?.(err => {
             });
             this.lastRNBFTask = null;
         }
